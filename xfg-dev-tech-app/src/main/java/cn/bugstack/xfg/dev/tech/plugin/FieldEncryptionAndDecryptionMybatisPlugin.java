@@ -1,6 +1,7 @@
 package cn.bugstack.xfg.dev.tech.plugin;
 
 import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.executor.Executor;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.plugin.Interceptor;
@@ -13,18 +14,24 @@ import org.apache.ibatis.session.RowBounds;
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
+import java.lang.reflect.Field;
 import java.util.Base64;
 import java.util.List;
+import java.util.Map;
 
 @Intercepts({
-        @Signature(type = Executor.class, method = "update", args = { MappedStatement.class, Object.class }),
-        @Signature(type = Executor.class, method = "query", args = { MappedStatement.class, Object.class, RowBounds.class, ResultHandler.class })
+        @Signature(type = Executor.class, method = "update", args = {MappedStatement.class, Object.class}),
+        @Signature(type = Executor.class, method = "query", args = {MappedStatement.class, Object.class, RowBounds.class, ResultHandler.class})
 })
 public class FieldEncryptionAndDecryptionMybatisPlugin implements Interceptor {
 
-    /** 密钥，必须是16位 */
+    /**
+     * 密钥，必须是16位
+     */
     private static final String KEY = "1898794876567654";
-    /** 偏移量，必须是16位 */
+    /**
+     * 偏移量，必须是16位
+     */
     private static final String IV = "1233214566547891";
 
     @Override
@@ -34,35 +41,41 @@ public class FieldEncryptionAndDecryptionMybatisPlugin implements Interceptor {
         Object parameter = args[1];
         String sqlId = mappedStatement.getId();
 
-        if (parameter != null) {
-            if (sqlId.contains("insert")) {
-                // 插入操作，加密
-                 String columnName = "employeeName";
-                 String fieldValue = BeanUtils.getProperty(parameter, columnName);
-                 String encryptedValue = encrypt(fieldValue);
-                 BeanUtils.setProperty(parameter, columnName, encryptedValue);
-            } else if (sqlId.contains("update")) {
-                // 更新操作，加密
-                 String columnName = "employeeName";
-                 String fieldValue = BeanUtils.getProperty(parameter, columnName);
-                 String encryptedValue = encrypt(fieldValue);
-                 BeanUtils.setProperty(parameter, columnName, encryptedValue);
+        if (parameter != null && (sqlId.contains("insert") || sqlId.contains("update")) ) {
+            String columnName = "employeeName";
+            if (parameter instanceof Map) {
+                List<Object> parameterList = (List<Object>) ((Map<?, ?>) parameter).get("list");
+                for (Object obj : parameterList) {
+                    if (hasField(obj, columnName)) {
+                        String fieldValue = BeanUtils.getProperty(obj, columnName);
+                        String encryptedValue = encrypt(fieldValue);
+                        BeanUtils.setProperty(obj, columnName, encryptedValue);
+                    }
+                }
+            } else {
+                if (hasField(parameter, columnName)) {
+                    String fieldValue = BeanUtils.getProperty(parameter, columnName);
+                    String encryptedValue = encrypt(fieldValue);
+                    BeanUtils.setProperty(parameter, columnName, encryptedValue);
+                }
             }
         }
 
         Object result = invocation.proceed();
 
         if (result != null && sqlId.contains("query")) {
-             // 查询操作，解密
-             String columnName = "employeeName";
-             if (result instanceof List){
-                 List<Object> resultList = (List<Object>) result;
-                 for (Object obj: resultList){
-                     String fieldValue = BeanUtils.getProperty(obj, columnName);
-                     String decryptedValue = decrypt(fieldValue);
-                     BeanUtils.setProperty(obj, columnName, decryptedValue);
-                 }
-             }
+            // 查询操作，解密
+            String columnName = "employeeName";
+            if (result instanceof List) {
+                List<Object> resultList = (List<Object>) result;
+                for (Object obj : resultList) {
+                    if (!hasField(obj, columnName)) continue;
+                    String fieldValue = BeanUtils.getProperty(obj, columnName);
+                    if (StringUtils.isBlank(fieldValue)) continue;
+                    String decryptedValue = decrypt(fieldValue);
+                    BeanUtils.setProperty(obj, columnName, decryptedValue);
+                }
+            }
         }
 
         return result;
@@ -96,5 +109,17 @@ public class FieldEncryptionAndDecryptionMybatisPlugin implements Interceptor {
         return new String(original);
     }
 
+    public boolean hasField(Object obj, String fieldName) {
+        Class<?> clazz = obj.getClass();
+        while (clazz != null) {
+            try {
+                Field field = clazz.getDeclaredField(fieldName);
+                return true;
+            } catch (NoSuchFieldException e) {
+                clazz = clazz.getSuperclass();
+            }
+        }
+        return false;
+    }
 
 }

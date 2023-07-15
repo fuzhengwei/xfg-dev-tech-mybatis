@@ -43,7 +43,7 @@ public class IEmployeeDAOTest {
     @Test
     public void test_insert_list() {
         List<EmployeePO> list = new ArrayList<>();
-        for (int i = 0; i < 5; i++) {
+        for (int i = 5; i < 8; i++) {
             EmployeePO employee = new EmployeePO();
             employee.setEmployeeNumber("1000001" + i);
             employee.setEmployeeName("花花");
