@@ -7,8 +7,8 @@ import java.util.Base64;
 
 public class ApiTest {
 
-    private static final String KEY = "1234567890123456"; // 密钥，必须是16位
-    private static final String IV = "1234567890123456"; // 偏移量，必须是16位
+    private static final String KEY = "1234567890123456";
+    private static final String IV = "1234567890123456";
 
     public static void main(String[] args) throws Exception {
         System.out.println("哈喽，小卡拉米，欢迎加入小傅哥的学习阵营。https://bugstack.cn/md/road-map/road-map.html");

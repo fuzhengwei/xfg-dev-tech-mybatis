@@ -27,7 +27,7 @@ public class ISalaryAdjustApplyServiceTest {
     public void test_execSalaryAdjust() {
         AdjustSalaryApplyOrderAggregate adjustSalaryApplyOrderAggregate = AdjustSalaryApplyOrderAggregate.builder()
                 .employeeNumber("10000001")
-                .orderId("100908977676001")
+                .orderId("100908977676002")
                 .employeeEntity(EmployeeEntity.builder().employeeLevel(EmployeePostVO.T3).employeeTitle(EmployeePostVO.T3).build())
                 .employeeSalaryAdjustEntity(EmployeeSalaryAdjustEntity.builder()
                         .adjustTotalAmount(new BigDecimal(100))

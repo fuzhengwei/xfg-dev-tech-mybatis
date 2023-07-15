@@ -41,22 +41,26 @@ public class FieldEncryptionAndDecryptionMybatisPlugin implements Interceptor {
         Object parameter = args[1];
         String sqlId = mappedStatement.getId();
 
-        if (parameter != null && (sqlId.contains("insert") || sqlId.contains("update")) ) {
+        if (parameter != null && (sqlId.contains("insert") || sqlId.contains("update"))) {
             String columnName = "employeeName";
             if (parameter instanceof Map) {
                 List<Object> parameterList = (List<Object>) ((Map<?, ?>) parameter).get("list");
                 for (Object obj : parameterList) {
                     if (hasField(obj, columnName)) {
                         String fieldValue = BeanUtils.getProperty(obj, columnName);
-                        String encryptedValue = encrypt(fieldValue);
-                        BeanUtils.setProperty(obj, columnName, encryptedValue);
+                        if (StringUtils.isNoneBlank(fieldValue)) {
+                            String encryptedValue = encrypt(fieldValue);
+                            BeanUtils.setProperty(obj, columnName, encryptedValue);
+                        }
                     }
                 }
             } else {
                 if (hasField(parameter, columnName)) {
                     String fieldValue = BeanUtils.getProperty(parameter, columnName);
-                    String encryptedValue = encrypt(fieldValue);
-                    BeanUtils.setProperty(parameter, columnName, encryptedValue);
+                    if (StringUtils.isNoneBlank(fieldValue)) {
+                        String encryptedValue = encrypt(fieldValue);
+                        BeanUtils.setProperty(parameter, columnName, encryptedValue);
+                    }
                 }
             }
         }
