@@ -13,7 +13,7 @@
     </resultMap>
 
     <insert id="insert" parameterType="cn.bugstack.xfg.dev.tech.infrastructure.po.EmployeeSalaryPO">
-        INSERT INTO employee_salary(employee, salary_total_amount, salary_merit_amount, salary_base_amount,
+        INSERT INTO employee_salary(employee_number, salary_total_amount, salary_merit_amount, salary_base_amount,
         create_time, update_time)
         VALUES(#{employeeNumber}, #{salaryTotalAmount}, #{salaryMeritAmount}, #{salaryBaseAmount}, now(), now())
     </insert>

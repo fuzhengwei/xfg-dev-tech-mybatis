@@ -13,6 +13,8 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 public class EmployeeInfoEntity {
 
+    /** 雇员编号 */
+    private String employeeNumber;
     /** 雇员姓名 */
     private String employeeName;
     /** 雇员级别 */
