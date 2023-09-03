@@ -1,4 +1,4 @@
-package cn.bugstack.xfg.dev.tech.domain.salary.model.aggreate;
+package cn.bugstack.xfg.dev.tech.domain.salary.model.aggregate;
 
 import cn.bugstack.xfg.dev.tech.domain.salary.model.entity.EmployeeEntity;
 import cn.bugstack.xfg.dev.tech.domain.salary.model.entity.EmployeeSalaryAdjustEntity;

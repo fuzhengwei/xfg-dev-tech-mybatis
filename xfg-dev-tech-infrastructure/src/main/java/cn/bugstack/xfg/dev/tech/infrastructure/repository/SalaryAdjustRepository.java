@@ -1,6 +1,6 @@
 package cn.bugstack.xfg.dev.tech.infrastructure.repository;
 
-import cn.bugstack.xfg.dev.tech.domain.salary.model.aggreate.AdjustSalaryApplyOrderAggregate;
+import cn.bugstack.xfg.dev.tech.domain.salary.model.aggregate.AdjustSalaryApplyOrderAggregate;
 import cn.bugstack.xfg.dev.tech.domain.salary.model.entity.EmployeeEntity;
 import cn.bugstack.xfg.dev.tech.domain.salary.model.entity.EmployeeSalaryAdjustEntity;
 import cn.bugstack.xfg.dev.tech.domain.salary.repository.ISalaryAdjustRepository;

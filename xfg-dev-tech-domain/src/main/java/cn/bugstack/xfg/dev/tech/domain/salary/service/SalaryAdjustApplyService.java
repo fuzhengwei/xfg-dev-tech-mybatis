@@ -1,6 +1,6 @@
 package cn.bugstack.xfg.dev.tech.domain.salary.service;
 
-import cn.bugstack.xfg.dev.tech.domain.salary.model.aggreate.AdjustSalaryApplyOrderAggregate;
+import cn.bugstack.xfg.dev.tech.domain.salary.model.aggregate.AdjustSalaryApplyOrderAggregate;
 import cn.bugstack.xfg.dev.tech.domain.salary.repository.ISalaryAdjustRepository;
 import org.springframework.stereotype.Service;
 
